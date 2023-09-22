@@ -20,14 +20,14 @@ def create(request):
         user = serializer.create(serializer.validated_data)
 
         response.data = {"message": f"usuario {user.username} creado satisfactoriamente"}
-        response.status = status.HTTP_201_CREATED
+        response.status_code = status.HTTP_201_CREATED
     else: 
-        response.data = serializer.errors
-        response.status = status.HTTP_400_BAD_REQUEST
+        response.data = {'message_error': serializer.errors}
+        response.status_code = status.HTTP_400_BAD_REQUEST
 
     return response
 
-@api_view(http_method_names=['GET'])
+@api_view(http_method_names=['POST'])
 def login(request): 
     email = request.data['email']
     password = request.data['password']
@@ -42,10 +42,9 @@ def login(request):
         
         token = Token.objects.get(user=user)
         response.data = {'Token': token.key}
-        response.status = status.HTTP_201_CREATED
     except Exception as e:
         response.data = str(e)
-        response.status = status.HTTP_400_BAD_REQUEST
+        response.status_code = status.HTTP_400_BAD_REQUEST
 
         return response 
     
@@ -54,11 +53,12 @@ def login(request):
 @api_view(http_method_names=['GET'])
 @permission_classes([IsAuthenticated])
 def list(request):
+    print('entro::')
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
 
     response = Response()
     response.data = serializer.data 
-    response.status = status.HTTP_200_OK
+    response.status_code = status.HTTP_200_OK
     
     return response
