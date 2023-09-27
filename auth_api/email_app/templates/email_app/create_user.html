@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        a {
+            color: #0078d4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration Successful</h1>
+    {% if activation_url %}
+        <p>{{activation_url}}</p>
+        <p>Thank you for registering with us. Your registration was successful.</p>
+        <p>Please click <a href={{activation_url}}>here</a> to activate your account</p>
+    {% endif %}
+</body>
+</html>

@@ -25,13 +25,14 @@ SECRET_KEY = 'django-insecure-vbi6srsye_n_he2esw#z(=s#iw7a_9+^38-my4x8yk_r7t6gr+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.80.14']
+#ALLOWED_HOSTS = ['192.168.80.14']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'auth_api.user',
+    'auth_api.email_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +132,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+#MAIL
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your gmail'
+EMAIL_HOST_PASSWORD = 'your app password'

@@ -1,13 +1,16 @@
-from .serializers import UserSerializer
-from .models import User
-
 from django.contrib.auth import authenticate
+from django.shortcuts import render, redirect
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response 
 from rest_framework.authtoken.models import Token
+
+from .serializers import UserSerializer
+from .models import User
+
+from ..email_app.service import create_email
 
 
 @api_view(http_method_names=['POST'])
@@ -19,9 +22,11 @@ def create(request):
     if serializer.is_valid():
         user = serializer.create(serializer.validated_data)
 
-        response.data = {"message": f"usuario {user.username} creado satisfactoriamente"}
+        response_email_app = create_email(user.username, user.id, request)
+        print(response_email_app)
+        response.data = {"message": f"usuario {user.username} creado satisfactoriamente, te hemos enviado un correo para que valides tu cuenta"}
         response.status_code = status.HTTP_201_CREATED
-    else: 
+    else:
         response.data = {'message_error': serializer.errors}
         response.status_code = status.HTTP_400_BAD_REQUEST
 
@@ -50,10 +55,10 @@ def login(request):
     
     return response
 
+#@TODO change for list all
 @api_view(http_method_names=['GET'])
 @permission_classes([IsAuthenticated])
 def list(request):
-    print('entro::')
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
 
@@ -62,3 +67,25 @@ def list(request):
     response.status_code = status.HTTP_200_OK
     
     return response
+
+@api_view(['GET'])
+def activate(request):
+    print('being called')
+    return redirect('activate-user-success')
+
+@api_view()
+def activate_user_success(request):
+    print(f'request.data {request.data}')
+    return render(request, "user/validate_user.html")
+
+
+""" user_id = request.query_params['id']
+
+user = User.objects.get(id=user_id)
+
+if user:
+    user.is_active = True
+    user.save()
+    redirect('activate-user-success', request)
+else:
+    raise User.DoesNotExist('There is not user with the id {}'.format(user_id)) """
